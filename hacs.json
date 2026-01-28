@@ -1,0 +1,7 @@
+{
+  "name": "WeatherDuino (Local JSON)",
+  "domains": ["weatherduino"],
+  "content_in_root": false,
+  "render_readme": true,
+  "zip_release": true
+}

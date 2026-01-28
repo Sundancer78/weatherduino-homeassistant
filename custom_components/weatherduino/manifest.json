@@ -1,0 +1,11 @@
+{
+  "domain": "weatherduino",
+  "name": "WeatherDuino (Local JSON)",
+  "version": "0.2.0",
+  "documentation": "https://example.invalid",
+  "issue_tracker": "https://example.invalid",
+  "requirements": [],
+  "codeowners": [],
+  "config_flow": true,
+  "iot_class": "local_polling"
+}

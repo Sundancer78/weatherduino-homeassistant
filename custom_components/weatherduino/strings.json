@@ -1,0 +1,16 @@
+{
+  "title": "WeatherDuino (Local JSON)",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to WeatherDuino",
+        "description": "Enter the IP/hostname of your WeatherDuino receiver. It must provide a JSON endpoint (default: /json).",
+        "data": {
+          "host": "IP/Hostname",
+          "path": "Path",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  }
+}

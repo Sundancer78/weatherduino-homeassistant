@@ -1,0 +1,15 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit WeatherDuino verbinden",
+        "description": "Gib die IP/Hostname deines WeatherDuino an. Das Gerät muss JSON liefern (Standard: /json).",
+        "data": {
+          "host": "IP/Hostname",
+          "path": "Pfad",
+          "scan_interval": "Abfrageintervall (Sekunden)"
+        }
+      }
+    }
+  }
+}
