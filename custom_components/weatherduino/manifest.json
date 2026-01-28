@@ -2,10 +2,10 @@
   "domain": "weatherduino",
   "name": "WeatherDuino (Local JSON)",
   "version": "0.2.1",
-  "documentation": "https://example.invalid",
-  "issue_tracker": "https://example.invalid",
+  "documentation": "https://github.com/Sundancer78/weatherduino-homeassistant",
+  "issue_tracker": "https://github.com/Sundancer78/weatherduino-homeassistant/issues",
   "requirements": [],
-  "codeowners": [],
+  "codeowners": ["@Sundancer78"],
   "config_flow": true,
   "iot_class": "local_polling"
 }
