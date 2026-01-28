@@ -38,6 +38,20 @@ def _normalize_path(raw: str | None) -> str:
     return path
 
 
+def _has_any(data: dict[str, Any], keys: list[str]) -> bool:
+    return any(k in data for k in keys)
+
+
+def _looks_like_4pro_receiver(data: dict[str, Any]) -> bool:
+    # Typical 4Pro receiver keys
+    return _has_any(data, ["Tout", "Hout", "Wsp", "Wdir", "Rtd", "Rfr", "Tin", "Hin"])
+
+
+def _looks_like_weatherdisplay(data: dict[str, Any]) -> bool:
+    # WeatherDisplay example: {"ID":"...","TID":7,"T":143,"H":775}
+    return ("T" in data and "H" in data) and not _looks_like_4pro_receiver(data)
+
+
 class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Fetch WeatherDuino JSON from local webserver."""
 
@@ -62,7 +76,11 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         self.url = f"{self.base_url}{self.wd_config.path}"
 
+        # Will be updated after first successful fetch
         self.device_id: str | None = None
+
+        # Used for device_info configuration_url handling
+        self.is_weatherdisplay: bool = False
 
         super().__init__(
             hass,
@@ -70,6 +88,18 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             name=f"{DOMAIN}-{self.wd_config.host}",
             update_interval=timedelta(seconds=self.wd_config.scan_interval),
         )
+
+    @property
+    def configuration_url(self) -> str | None:
+        """
+        Return a clickable configuration URL for the HA device page.
+
+        - 4Pro receiver: has a web UI under /weather
+        - WeatherDisplay: no web UI -> return None (no link in HA)
+        """
+        if self.is_weatherdisplay:
+            return None
+        return f"{self.base_url}/weather"
 
     async def _async_update_data(self) -> dict[str, Any]:
         session = async_get_clientsession(self.hass)
@@ -81,6 +111,10 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         except (ClientError, TimeoutError, ValueError) as err:
             raise UpdateFailed(f"Error fetching/parsing WeatherDuino JSON from {self.url}: {err}") from err
 
+        # Detect device type for config URL behavior
+        self.is_weatherdisplay = _looks_like_weatherdisplay(data)
+
+        # Prefer device-reported ID for naming
         if isinstance(data.get("ID"), str) and data["ID"].strip():
             self.device_id = data["ID"].strip()
         else:

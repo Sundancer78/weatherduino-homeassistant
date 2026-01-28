@@ -27,10 +27,6 @@ from .const import DOMAIN
 from .coordinator import WeatherDuinoCoordinator
 
 
-# ---------------------------
-# Helper structures
-# ---------------------------
-
 @dataclass(frozen=True)
 class WDValue:
     key: str
@@ -53,12 +49,10 @@ def _has_any(data: dict[str, Any], keys: list[str]) -> bool:
 
 
 def _looks_like_4pro_receiver(data: dict[str, Any]) -> bool:
-    # Typical 4Pro receiver keys
     return _has_any(data, ["Tout", "Hout", "Wsp", "Wdir", "Rtd", "Rfr", "Tin", "Hin"])
 
 
 def _looks_like_weatherdisplay(data: dict[str, Any]) -> bool:
-    # WeatherDisplay example: {"ID":"...","TID":7,"T":143,"H":775}
     return ("T" in data and "H" in data) and not _looks_like_4pro_receiver(data)
 
 
@@ -68,10 +62,6 @@ def _get_tid(data: dict[str, Any]) -> int | None:
         return int(tid)
     return None
 
-
-# ---------------------------
-# 4Pro Receiver sensors (FULL)
-# ---------------------------
 
 SENSORS_4PRO: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
     (
@@ -208,7 +198,6 @@ SENSORS_4PRO: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
         ),
         _raw("AQI"),
     ),
-    # Extra sensors ES1..ES4
     (
         SensorEntityDescription(
             key="ES1T",
@@ -281,7 +270,6 @@ SENSORS_4PRO: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
         ),
         _div10("ES4H"),
     ),
-    # Soil sensors
     (
         SensorEntityDescription(
             key="So1T",
@@ -318,11 +306,6 @@ SENSORS_4PRO: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
     ),
 )
 
-
-# ---------------------------
-# WeatherDisplay sensors
-# ---------------------------
-
 SENSORS_WEATHERDISPLAY: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
     (
         SensorEntityDescription(
@@ -353,10 +336,6 @@ SENSORS_WEATHERDISPLAY: tuple[tuple[SensorEntityDescription, WDValue], ...] = (
 )
 
 
-# ---------------------------
-# Setup
-# ---------------------------
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -374,7 +353,6 @@ async def async_setup_entry(
 
     entities: list[WeatherDuinoSensor] = []
     for description, wd_value in sensor_set:
-        # Create only sensors that exist in the current JSON payload
         if wd_value.key in data:
             entities.append(
                 WeatherDuinoSensor(
@@ -391,7 +369,7 @@ async def async_setup_entry(
 
 class WeatherDuinoSensor(CoordinatorEntity[WeatherDuinoCoordinator], SensorEntity):
     _attr_should_poll = False
-    _attr_has_entity_name = True  # "<device name> <entity name>"
+    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -408,10 +386,8 @@ class WeatherDuinoSensor(CoordinatorEntity[WeatherDuinoCoordinator], SensorEntit
         self._entry = entry
         self._tid = tid
 
-        # CLEAN sensor name: no TID in the displayed name
         self._attr_name = description.name
 
-        # Unique ID: include TID for WeatherDisplay so multiple transmitters can coexist
         if self._tid is not None:
             self._attr_unique_id = f"{entry.unique_id or entry.entry_id}_tid{self._tid}_{description.key}"
         else:
@@ -425,15 +401,16 @@ class WeatherDuinoSensor(CoordinatorEntity[WeatherDuinoCoordinator], SensorEntit
     def device_info(self) -> dict[str, Any]:
         dev_name = self.coordinator.device_id or self._entry.title
 
-        if self.coordinator.wd_config.port and self.coordinator.wd_config.port != 80:
-            cfg_url = f"http://{self.coordinator.wd_config.host}:{self.coordinator.wd_config.port}"
-        else:
-            cfg_url = f"http://{self.coordinator.wd_config.host}"
-
-        return {
+        info: dict[str, Any] = {
             "identifiers": {(DOMAIN, self._entry.entry_id)},
             "name": dev_name,
             "manufacturer": "WeatherDuino",
             "model": "WeatherDuino (Local JSON)",
-            "configuration_url": cfg_url,
         }
+
+        # Only set a configuration URL when the device actually has a web UI (4Pro: /weather)
+        cfg_url = self.coordinator.configuration_url
+        if cfg_url:
+            info["configuration_url"] = cfg_url
+
+        return info
