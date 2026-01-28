@@ -1,5 +1,3 @@
-# custom_components/weatherduino/coordinator.py
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -29,6 +27,17 @@ class WeatherDuinoConfig:
     scan_interval: int
 
 
+def _normalize_path(raw: str | None) -> str:
+    if raw is None:
+        return DEFAULT_PATH
+    path = str(raw).strip()
+    if path == "":
+        return "/"
+    if not path.startswith("/"):
+        path = "/" + path
+    return path
+
+
 class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Fetch WeatherDuino JSON from local webserver."""
 
@@ -38,16 +47,14 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         host = entry.data.get(CONF_HOST, "")
         port = int(entry.data.get(CONF_PORT, DEFAULT_PORT))
-        path = entry.options.get(CONF_PATH, entry.data.get(CONF_PATH, DEFAULT_PATH))
-        scan = int(entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 30)))
 
-        # Normalize path
-        if not str(path).startswith("/"):
-            path = "/" + str(path)
+        path = entry.options.get(CONF_PATH, entry.data.get(CONF_PATH, DEFAULT_PATH))
+        path = _normalize_path(path)
+
+        scan = int(entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 30)))
 
         self.wd_config = WeatherDuinoConfig(host=host, port=port, path=path, scan_interval=scan)
 
-        # Build URL (include port if not default 80)
         if self.wd_config.port and self.wd_config.port != 80:
             self.base_url = f"http://{self.wd_config.host}:{self.wd_config.port}"
         else:
@@ -55,7 +62,6 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         self.url = f"{self.base_url}{self.wd_config.path}"
 
-        # Will be updated after first successful fetch
         self.device_id: str | None = None
 
         super().__init__(
@@ -75,7 +81,6 @@ class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         except (ClientError, TimeoutError, ValueError) as err:
             raise UpdateFailed(f"Error fetching/parsing WeatherDuino JSON from {self.url}: {err}") from err
 
-        # Prefer device-reported ID for naming
         if isinstance(data.get("ID"), str) and data["ID"].strip():
             self.device_id = data["ID"].strip()
         else:

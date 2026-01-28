@@ -4,10 +4,23 @@
     "step": {
       "user": {
         "title": "Connect to WeatherDuino",
-        "description": "Enter the IP/hostname of your WeatherDuino receiver. It must provide a JSON endpoint (default: /json).",
+        "description": "Enter the IP/hostname of your WeatherDuino device.\n\nJSON path:\n- Default is /json (WeatherDuino 4Pro)\n- Leave empty to use / (root), e.g. for WeatherDisplay",
         "data": {
           "host": "IP/Hostname",
-          "path": "Path",
+          "port": "Port",
+          "path": "JSON path (leave empty for /)",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "WeatherDuino Options",
+        "description": "Adjust polling settings.\n\nJSON path:\n- Default is /json\n- Leave empty to use / (root)",
+        "data": {
+          "path": "JSON path (leave empty for /)",
           "scan_interval": "Scan interval (seconds)"
         }
       }
