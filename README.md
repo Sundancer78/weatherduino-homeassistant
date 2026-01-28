@@ -48,6 +48,15 @@ https://github.com/Sundancer78/weatherduino-homeassistant
 
 ---
 
+## Disclaimer
+
+This is an **unofficial Home Assistant integration** developed by the community.
+It has **no relation to the official WeatherDuino manufacturer** and is **not supported or endorsed by them**.
+
+The integration communicates exclusively with the device’s local JSON interface.
+
+---
+
 ## Configuration (UI)
 
 - Host / IP (e.g. `192.168.1.240`)
