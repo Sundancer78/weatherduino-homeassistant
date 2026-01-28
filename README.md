@@ -12,7 +12,7 @@ https://github.com/Sundancer78/weatherduino-homeassistant
 
 ## Features
 
-- Fully local (no cloud dependency)
+- Fully local
 - Config Flow (UI-based setup)
 - Automatic sensor creation
 - Clean naming:
@@ -180,6 +180,7 @@ cards:
       - sensor.rx_weatherduino_4pro_pm2_5
       - sensor.rx_weatherduino_4pro_pm10
       - sensor.rx_weatherduino_4pro_air_quality_index
+```
 	  
 ## Screenshot 2 – Mushroom Status & Rain Chart  
 `Screenshots/lovelace-cards1.png`
@@ -230,4 +231,43 @@ cards:
         group_by:
           func: last
           duration: 5min
+```
+## Screenshot 3 – Rain Gauge + ApexCharts
+`Screenshots/lovelace-cards2.png`
+```yaml
+type: custom:layout-card
+layout_type: grid
+layout:
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr))
+  grid-gap: 16px
+cards:
+  - type: custom:rain-gauge-card
+    title: Rain Gauge
+    entity: sensor.rx_weatherduino_4pro_rain_today
+
+  - type: custom:apexcharts-card
+    header:
+      show: true
+      title: Rain (24h)
+    graph_span: 24h
+    apex_config:
+      stroke:
+        width: 2
+      markers:
+        size: 0
+    series:
+      - entity: sensor.rx_weatherduino_4pro_rain_rate
+        name: Rain Rate (mm/h)
+        type: column
+        group_by:
+          func: max
+          duration: 5min
+      - entity: sensor.rx_weatherduino_4pro_rain_today
+        name: Rain Today (mm)
+        type: line
+        stroke_width: 1.5
+        group_by:
+          func: last
+          duration: 5min
+```
 
