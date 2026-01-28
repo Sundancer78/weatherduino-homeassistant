@@ -1,11 +1,8 @@
-# weatherduino-homeassistant
-weatherduino-homeassistant-integration
-
 # WeatherDuino (Local JSON) – Home Assistant Integration
 
 A custom Home Assistant integration for **WeatherDuino** receivers that expose their data via a local HTTP JSON endpoint (default: `/json`).
 
-The integration is set up entirely via **Config Flow (UI)**:  
+The integration is configured entirely via **Config Flow (UI)**:  
 enter the IP/hostname → sensors are created automatically.
 
 Repository:  
@@ -15,23 +12,23 @@ https://github.com/Sundancer78/weatherduino-homeassistant
 
 ## Features
 
-- ✅ Fully local (no cloud dependency)
-- ✅ Config Flow (UI-based setup)
-- ✅ Automatic sensor creation
-- ✅ Clean naming:
+- Fully local (no cloud dependency)
+- Config Flow (UI-based setup)
+- Automatic sensor creation
+- Clean naming:
   - Device name from JSON field `ID` (fallback: host)
   - Sensor names without `WeatherDuino <IP>` prefixes
-- ✅ Ready-to-use Lovelace dashboard examples
-- ✅ Wind, rain, air quality, soil & extra sensors supported
+- Dashboard examples with full Lovelace YAML
+- Wind, rain, air quality, soil & extra sensors supported
 
 ---
 
 ## Requirements
 
 - Home Assistant (Core / OS / Supervised)
-- WeatherDuino reachable in your local network
+- WeatherDuino reachable in the local network
 - JSON endpoint available (default: `/json`)
-- Recorder enabled (recommended for charts/history)
+- Recorder enabled (recommended for charts)
 
 ---
 
@@ -49,92 +46,75 @@ https://github.com/Sundancer78/weatherduino-homeassistant
 6. Settings → **Devices & Services** → **Add Integration**
 7. Search for **WeatherDuino (Local JSON)**
 
-### Manual Installation
-
-1. Copy  
-   `custom_components/weatherduino/`  
-   into  
-   `config/custom_components/weatherduino/`
-2. Restart Home Assistant
-3. Add the integration via UI
-
 ---
 
 ## Configuration (UI)
 
-During setup you can configure:
-
-- **Host/IP** (e.g. `192.168.1.240`)
-- **Port** (default: `80`)
-- **Path** (default: `/json`)
-- **Scan interval** (default: `30s`)
+- Host / IP (e.g. `192.168.1.240`)
+- Port (default: `80`)
+- Path (default: `/json`)
+- Scan interval (default: `30s`)
 
 ---
 
 ## Recommended Lovelace Cards (HACS)
 
-The dashboards shown below use the following cards:
+The dashboards below use:
 
-- **Mushroom Cards** – clean tiles & chips
-- **ApexCharts Card** – advanced charts, thin lines, grouping
-- **Windrose Card** – wind direction distribution with speed bins
-- **Rain Gauge Card** – rain “today” visualization
-- **Layout Card** – stable, responsive multi-column layouts
+- **Mushroom Cards**
+- **ApexCharts Card**
+- **Windrose Card**
+- **Rain Gauge Card**
+- **Layout Card**
 
 Optional:
-- **card-mod** – colored warning chips (rain, CO₂, etc.)
+- **card-mod**
 
 ---
 
 ## Screenshots
 
-> Screenshots are located in the `Screenshots/` folder.
+Screenshots are located in the `Screenshots/` folder.
 
-### 1) Overview – Classic Cards
-![WeatherDuino Dashboard Overview](Screenshots/lovelace-cards.png)
+### 1) Overview – Classic Dashboard
+![Overview](Screenshots/lovelace-cards.png)
 
 ### 2) Status & Quick Values (Mushroom + ApexCharts)
-![WeatherDuino Status Cards](Screenshots/lovelace-cards1.png)
+![Status](Screenshots/lovelace-cards1.png)
 
 ### 3) Rain Monitoring (Rain Gauge + ApexCharts)
-![WeatherDuino Rain Monitoring](Screenshots/lovelace-cards2.png)
+![Rain](Screenshots/lovelace-cards2.png)
 
-### 4) Wind Analysis (Windrose 24h / 4h)
-![WeatherDuino Windrose](Screenshots/windrose.png)
+### 4) Wind Analysis (Windrose)
+![Windrose](Screenshots/windrose.png)
 
-### 5) Sensors (Entities List)
-![WeatherDuino Sensors](Screenshots/Sensor.png)
+### 5) All Sensors (Entities)
+![Sensors](Screenshots/Sensor.png)
 
 ---
 
-# Lovelace YAML – Code per Screenshot
+# Lovelace YAML – COMPLETE CODE PER SCREENSHOT
 
-> **Entity IDs used in the examples**  
-> (adjust if your IDs differ):
->
-> - `sensor.rx_weatherduino_4pro_outside_temperature`
-> - `sensor.rx_weatherduino_4pro_outside_humidity`
-> - `sensor.rx_weatherduino_4pro_pressure`
-> - `sensor.rx_weatherduino_4pro_wind_speed`
-> - `sensor.rx_weatherduino_4pro_wind_gust`
-> - `sensor.rx_weatherduino_4pro_wind_direction`
-> - `sensor.rx_weatherduino_4pro_rain_today`
-> - `sensor.rx_weatherduino_4pro_rain_rate`
-> - `sensor.rx_weatherduino_4pro_solar_radiation`
-> - `sensor.rx_weatherduino_4pro_co2`
-> - `sensor.rx_weatherduino_4pro_pm2_5`
-> - `sensor.rx_weatherduino_4pro_pm10`
-> - `sensor.rx_weatherduino_4pro_air_quality_index`
+All examples below use these entity IDs (adjust if needed):
+
+- `sensor.rx_weatherduino_4pro_outside_temperature`
+- `sensor.rx_weatherduino_4pro_outside_humidity`
+- `sensor.rx_weatherduino_4pro_pressure`
+- `sensor.rx_weatherduino_4pro_wind_speed`
+- `sensor.rx_weatherduino_4pro_wind_gust`
+- `sensor.rx_weatherduino_4pro_wind_direction`
+- `sensor.rx_weatherduino_4pro_rain_today`
+- `sensor.rx_weatherduino_4pro_rain_rate`
+- `sensor.rx_weatherduino_4pro_solar_radiation`
+- `sensor.rx_weatherduino_4pro_co2`
+- `sensor.rx_weatherduino_4pro_pm2_5`
+- `sensor.rx_weatherduino_4pro_pm10`
+- `sensor.rx_weatherduino_4pro_air_quality_index`
 
 ---
 
 ## Screenshot 1 – Classic Overview  
 `Screenshots/lovelace-cards.png`
-
-**Layout:**  
-Left = quick values,  
-Center = history graphs,  
-Right = air quality entities.
 
 ```yaml
 type: custom:layout-card
@@ -193,26 +173,61 @@ cards:
             entity: sensor.rx_weatherduino_4pro_solar_radiation
             name: Solar Radiation
 
-  - type: vertical-stack
-    cards:
-      - type: history-graph
-        title: History (12h)
-        hours_to_show: 12
-        entities:
-          - entity: sensor.rx_weatherduino_4pro_outside_temperature
-            name: Outside °C
-      - type: history-graph
-        title: Pressure (12h)
-        hours_to_show: 12
-        entities:
-          - entity: sensor.rx_weatherduino_4pro_pressure
-            name: hPa
-
   - type: entities
     title: Air Quality
-    show_header_toggle: false
     entities:
       - sensor.rx_weatherduino_4pro_co2
       - sensor.rx_weatherduino_4pro_pm2_5
       - sensor.rx_weatherduino_4pro_pm10
       - sensor.rx_weatherduino_4pro_air_quality_index
+	  
+## Screenshot 2 – Mushroom Status & Rain Chart  
+`Screenshots/lovelace-cards1.png`
+
+```yaml
+type: vertical-stack
+cards:
+  - type: custom:mushroom-chips-card
+    alignment: center
+    chips:
+      - type: entity
+        entity: sensor.rx_weatherduino_4pro_outside_temperature
+        name: Outside
+      - type: entity
+        entity: sensor.rx_weatherduino_4pro_outside_humidity
+        name: Humidity
+      - type: entity
+        entity: sensor.rx_weatherduino_4pro_pressure
+        name: Pressure
+      - type: entity
+        entity: sensor.rx_weatherduino_4pro_wind_speed
+        name: Wind
+      - type: entity
+        entity: sensor.rx_weatherduino_4pro_rain_rate
+        name: Rain Rate
+
+  - type: custom:apexcharts-card
+    header:
+      show: true
+      title: Rain (12h)
+    graph_span: 12h
+    apex_config:
+      stroke:
+        width: 2
+      markers:
+        size: 0
+    series:
+      - entity: sensor.rx_weatherduino_4pro_rain_rate
+        name: Rain Rate (mm/h)
+        type: column
+        group_by:
+          func: max
+          duration: 5min
+      - entity: sensor.rx_weatherduino_4pro_rain_today
+        name: Rain Today (mm)
+        type: line
+        stroke_width: 1.5
+        group_by:
+          func: last
+          duration: 5min
+
