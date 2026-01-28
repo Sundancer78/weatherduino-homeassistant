@@ -7,6 +7,20 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.3.3] – 2026-01-28
+
+### Added
+- Device-specific configuration URLs in the Home Assistant device page
+  - WeatherDuino 4Pro opens the built-in web interface at `/weather`
+  - WeatherDisplay devices no longer show a non-functional web link
+
+### Changed
+- Improved device type detection based on the reported JSON payload
+- Refined device information displayed in Home Assistant
+- Internal cleanup and refinements for HACS submission
+
+---
+
 ## [0.3.2] – 2026-01-28
 
 ### Added
