@@ -16,7 +16,7 @@ https://github.com/Sundancer78/weatherduino-homeassistant
 - Default JSON path: `/json`
 - Provides the full receiver payload (wind, rain, pressure, AQI, extra sensors, soil sensors depending on setup)
 
-### WeatherDuino WeatherDisplay
+### WeatherDuino WeatherDisplay 4Pro
 - JSON path is typically the root endpoint: `/`
 - Payload example:
   `{"ID":"WD-WeatherDisplay-4Pro","TID":7,"T":143,"H":775}`
