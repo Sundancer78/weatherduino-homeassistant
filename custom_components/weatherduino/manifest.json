@@ -1,7 +1,7 @@
 {
   "domain": "weatherduino",
   "name": "WeatherDuino (Local JSON)",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "documentation": "https://github.com/Sundancer78/weatherduino-homeassistant",
   "issue_tracker": "https://github.com/Sundancer78/weatherduino-homeassistant/issues",
   "requirements": [],

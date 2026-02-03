@@ -131,88 +131,88 @@ def aq_avgmode_value() -> WDValue:
 PREC2 = 2
 
 SENSORS_4PRO = (
-    (SensorEntityDescription(key="Tin", name="Inside Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("Tin")),
-    (SensorEntityDescription(key="Hin", name="Inside Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("Hin")),
-    (SensorEntityDescription(key="Tout", name="Outside Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("Tout")),
-    (SensorEntityDescription(key="Hout", name="Outside Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("Hout")),
-    (SensorEntityDescription(key="P", name="Pressure", device_class=SensorDeviceClass.PRESSURE, native_unit_of_measurement=UnitOfPressure.HPA, suggested_display_precision=PREC2), div10("P")),
+    (SensorEntityDescription(key="Tin", name="Inside Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("Tin")),
+    (SensorEntityDescription(key="Hin", name="Inside Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("Hin")),
+    (SensorEntityDescription(key="Tout", name="Outside Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("Tout")),
+    (SensorEntityDescription(key="Hout", name="Outside Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("Hout")),
+    (SensorEntityDescription(key="P", name="Pressure", device_class=SensorDeviceClass.PRESSURE, native_unit_of_measurement=UnitOfPressure.HPA, suggested_display_precision=PREC2, icon="mdi:gauge"), div10("P")),
 
-    (SensorEntityDescription(key="Wsp", name="Wind Speed", device_class=SensorDeviceClass.WIND_SPEED, native_unit_of_measurement=UnitOfSpeed.METERS_PER_SECOND, suggested_display_precision=PREC2), div10("Wsp")),
-    (SensorEntityDescription(key="Wgs", name="Wind Gust", device_class=SensorDeviceClass.WIND_SPEED, native_unit_of_measurement=UnitOfSpeed.METERS_PER_SECOND, suggested_display_precision=PREC2), div10("Wgs")),
-    (SensorEntityDescription(key="Wdir", name="Wind Direction", native_unit_of_measurement="°", suggested_display_precision=0), raw_int("Wdir")),
+    (SensorEntityDescription(key="Wsp", name="Wind Speed", device_class=SensorDeviceClass.WIND_SPEED, native_unit_of_measurement=UnitOfSpeed.METERS_PER_SECOND, suggested_display_precision=PREC2, icon="mdi:weather-windy"), div10("Wsp")),
+    (SensorEntityDescription(key="Wgs", name="Wind Gust", device_class=SensorDeviceClass.WIND_SPEED, native_unit_of_measurement=UnitOfSpeed.METERS_PER_SECOND, suggested_display_precision=PREC2, icon="mdi:weather-windy-variant"), div10("Wgs")),
+    (SensorEntityDescription(key="Wdir", name="Wind Direction", native_unit_of_measurement="°", suggested_display_precision=0, icon="mdi:compass-outline"), raw_int("Wdir")),
 
-    (SensorEntityDescription(key="Rtd", name="Rain Today", native_unit_of_measurement=UnitOfLength.MILLIMETERS, suggested_display_precision=PREC2), div10("Rtd")),
-    (SensorEntityDescription(key="Rfr", name="Rain Rate", native_unit_of_measurement=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR, suggested_display_precision=PREC2), div10("Rfr")),
+    (SensorEntityDescription(key="Rtd", name="Rain Today", native_unit_of_measurement=UnitOfLength.MILLIMETERS, suggested_display_precision=PREC2, icon="mdi:cup-water"), div10("Rtd")),
+    (SensorEntityDescription(key="Rfr", name="Rain Rate", native_unit_of_measurement=UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR, suggested_display_precision=PREC2, icon="mdi:weather-pouring"), div10("Rfr")),
 
-    (SensorEntityDescription(key="SR", name="Solar Radiation", device_class=SensorDeviceClass.IRRADIANCE, native_unit_of_measurement="W/m²", suggested_display_precision=0), raw_int("SR")),
-    (SensorEntityDescription(key="UV", name="UV Index", suggested_display_precision=0), raw_int("UV")),
+    (SensorEntityDescription(key="SR", name="Solar Radiation", device_class=SensorDeviceClass.IRRADIANCE, native_unit_of_measurement="W/m²", suggested_display_precision=0, icon="mdi:white-balance-sunny"), raw_int("SR")),
+    (SensorEntityDescription(key="UV", name="UV Index", suggested_display_precision=0, icon="mdi:sun-wireless"), raw_int("UV")),
 
-    (SensorEntityDescription(key="C02", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0), raw_int("C02")),
-    (SensorEntityDescription(key="PM25", name="PM2.5", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25")),
-    (SensorEntityDescription(key="PM100", name="PM10", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100")),
-    (SensorEntityDescription(key="AQI", name="Air Quality Index", suggested_display_precision=0), raw_int("AQI")),
+    (SensorEntityDescription(key="C02", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0, icon="mdi:molecule-co2"), raw_int("C02")),
+    (SensorEntityDescription(key="PM25", name="PM2.5", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25")),
+    (SensorEntityDescription(key="PM100", name="PM10", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100")),
+    (SensorEntityDescription(key="AQI", name="Air Quality Index", suggested_display_precision=0, icon="mdi:airballoon-outline"), raw_int("AQI")),
 
-    (SensorEntityDescription(key="ES1T", name="Extra Sensor 1 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("ES1T")),
-    (SensorEntityDescription(key="ES1H", name="Extra Sensor 1 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("ES1H")),
-    (SensorEntityDescription(key="ES2T", name="Extra Sensor 2 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("ES2T")),
-    (SensorEntityDescription(key="ES2H", name="Extra Sensor 2 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("ES2H")),
-    (SensorEntityDescription(key="ES3T", name="Extra Sensor 3 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("ES3T")),
-    (SensorEntityDescription(key="ES3H", name="Extra Sensor 3 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("ES3H")),
-    (SensorEntityDescription(key="ES4T", name="Extra Sensor 4 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("ES4T")),
-    (SensorEntityDescription(key="ES4H", name="Extra Sensor 4 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("ES4H")),
+    (SensorEntityDescription(key="ES1T", name="Extra Sensor 1 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("ES1T")),
+    (SensorEntityDescription(key="ES1H", name="Extra Sensor 1 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("ES1H")),
+    (SensorEntityDescription(key="ES2T", name="Extra Sensor 2 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("ES2T")),
+    (SensorEntityDescription(key="ES2H", name="Extra Sensor 2 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("ES2H")),
+    (SensorEntityDescription(key="ES3T", name="Extra Sensor 3 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("ES3T")),
+    (SensorEntityDescription(key="ES3H", name="Extra Sensor 3 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("ES3H")),
+    (SensorEntityDescription(key="ES4T", name="Extra Sensor 4 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("ES4T")),
+    (SensorEntityDescription(key="ES4H", name="Extra Sensor 4 Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("ES4H")),
 
-    (SensorEntityDescription(key="So1T", name="Soil 1 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("So1T")),
-    (SensorEntityDescription(key="So1M", name="Soil 1 Moisture", native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("So1M")),
-    (SensorEntityDescription(key="So2T", name="Soil 2 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("So2T")),
-    (SensorEntityDescription(key="So2M", name="Soil 2 Moisture", native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("So2M")),
+    (SensorEntityDescription(key="So1T", name="Soil 1 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer-lines"), div10("So1T")),
+    (SensorEntityDescription(key="So1M", name="Soil 1 Moisture", native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:sprout"), div10("So1M")),
+    (SensorEntityDescription(key="So2T", name="Soil 2 Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer-lines"), div10("So2T")),
+    (SensorEntityDescription(key="So2M", name="Soil 2 Moisture", native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:sprout"), div10("So2M")),
 
-    (SensorEntityDescription(key="ts", name="Last Update", device_class=SensorDeviceClass.TIMESTAMP, entity_category=EntityCategory.DIAGNOSTIC), epoch("ts")),
-    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0), raw_int("TID")),
+    (SensorEntityDescription(key="ts", name="Last Update", device_class=SensorDeviceClass.TIMESTAMP, entity_category=EntityCategory.DIAGNOSTIC, icon="mdi:clock-outline"), epoch("ts")),
+    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0, icon="mdi:information-outline"), raw_int("TID")),
 )
 
 SENSORS_WEATHERDISPLAY = (
-    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("T")),
-    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("H")),
-    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0), raw_int("TID")),
+    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("T")),
+    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("H")),
+    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0, icon="mdi:information-outline"), raw_int("TID")),
 )
 
 SENSORS_AQM3 = (
-    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("T")),
-    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("H")),
-    (SensorEntityDescription(key="P", name="Pressure", device_class=SensorDeviceClass.PRESSURE, native_unit_of_measurement=UnitOfPressure.HPA, suggested_display_precision=PREC2), div10("P")),
+    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("T")),
+    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("H")),
+    (SensorEntityDescription(key="P", name="Pressure", device_class=SensorDeviceClass.PRESSURE, native_unit_of_measurement=UnitOfPressure.HPA, suggested_display_precision=PREC2, icon="mdi:gauge"), div10("P")),
 
-    (SensorEntityDescription(key="PM25_last", name="PM2.5 Last", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25_last")),
-    (SensorEntityDescription(key="PM100_last", name="PM10 Last", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100_last")),
-    (SensorEntityDescription(key="PM25_1H", name="PM2.5 1h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25_1H")),
-    (SensorEntityDescription(key="PM100_1H", name="PM10 1h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100_1H")),
-    (SensorEntityDescription(key="PM25_3H", name="PM2.5 3h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25_3H")),
-    (SensorEntityDescription(key="PM100_3H", name="PM10 3h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100_3H")),
-    (SensorEntityDescription(key="PM25_12H", name="PM2.5 12h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25_12H")),
-    (SensorEntityDescription(key="PM100_12H", name="PM10 12h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100_12H")),
-    (SensorEntityDescription(key="PM25_24H", name="PM2.5 24h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25_24H")),
-    (SensorEntityDescription(key="PM100_24H", name="PM10 24h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100_24H")),
+    (SensorEntityDescription(key="PM25_last", name="PM2.5 Last", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25_last")),
+    (SensorEntityDescription(key="PM100_last", name="PM10 Last", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100_last")),
+    (SensorEntityDescription(key="PM25_1H", name="PM2.5 1h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25_1H")),
+    (SensorEntityDescription(key="PM100_1H", name="PM10 1h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100_1H")),
+    (SensorEntityDescription(key="PM25_3H", name="PM2.5 3h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25_3H")),
+    (SensorEntityDescription(key="PM100_3H", name="PM10 3h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100_3H")),
+    (SensorEntityDescription(key="PM25_12H", name="PM2.5 12h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25_12H")),
+    (SensorEntityDescription(key="PM100_12H", name="PM10 12h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100_12H")),
+    (SensorEntityDescription(key="PM25_24H", name="PM2.5 24h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25_24H")),
+    (SensorEntityDescription(key="PM100_24H", name="PM10 24h", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100_24H")),
 
-    (SensorEntityDescription(key="CO2", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0), raw_int("CO2")),
+    (SensorEntityDescription(key="CO2", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0, icon="mdi:molecule-co2"), raw_int("CO2")),
 
-    (SensorEntityDescription(key="ts", name="Last Update", device_class=SensorDeviceClass.TIMESTAMP, entity_category=EntityCategory.DIAGNOSTIC), epoch("ts")),
-    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0), raw_int("TID")),
+    (SensorEntityDescription(key="ts", name="Last Update", device_class=SensorDeviceClass.TIMESTAMP, entity_category=EntityCategory.DIAGNOSTIC, icon="mdi:clock-outline"), epoch("ts")),
+    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0, icon="mdi:information-outline"), raw_int("TID")),
 )
 
 SENSORS_AQM2 = (
-    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2), div10("T")),
-    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2), div10("H")),
+    (SensorEntityDescription(key="T", name="Temperature", device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS, suggested_display_precision=PREC2, icon="mdi:thermometer"), div10("T")),
+    (SensorEntityDescription(key="H", name="Humidity", device_class=SensorDeviceClass.HUMIDITY, native_unit_of_measurement=PERCENTAGE, suggested_display_precision=PREC2, icon="mdi:water-percent"), div10("H")),
 
-    (SensorEntityDescription(key="PM25", name="PM2.5", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM25")),
-    (SensorEntityDescription(key="PM100", name="PM10", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2), div10("PM100")),
+    (SensorEntityDescription(key="PM25", name="PM2.5", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM25")),
+    (SensorEntityDescription(key="PM100", name="PM10", native_unit_of_measurement="µg/m³", suggested_display_precision=PREC2, icon="mdi:air-filter"), div10("PM100")),
 
-    (SensorEntityDescription(key="PM25AQI", name="PM2.5 AQI", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=PREC2), div10("PM25AQI")),
-    (SensorEntityDescription(key="PM100AQI", name="PM10 AQI", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=PREC2), div10("PM100AQI")),
+    (SensorEntityDescription(key="PM25AQI", name="PM2.5 AQI", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=PREC2, icon="mdi:airballoon-outline"), div10("PM25AQI")),
+    (SensorEntityDescription(key="PM100AQI", name="PM10 AQI", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=PREC2, icon="mdi:airballoon-outline"), div10("PM100AQI")),
 
     # renamed + value mapped to text
-    (SensorEntityDescription(key="AVG_M", name="AQ Average Mode", entity_category=EntityCategory.DIAGNOSTIC), aq_avgmode_value()),
+    (SensorEntityDescription(key="AVG_M", name="AQ Average Mode", entity_category=EntityCategory.DIAGNOSTIC, icon="mdi:chart-timeline-variant"), aq_avgmode_value()),
 
-    (SensorEntityDescription(key="CO2", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0), raw_int("CO2")),
-    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0), raw_int("TID")),
+    (SensorEntityDescription(key="CO2", name="CO2", native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION, suggested_display_precision=0, icon="mdi:molecule-co2"), raw_int("CO2")),
+    (SensorEntityDescription(key="TID", name="Device Type", entity_category=EntityCategory.DIAGNOSTIC, suggested_display_precision=0, icon="mdi:information-outline"), raw_int("TID")),
 )
 
 
