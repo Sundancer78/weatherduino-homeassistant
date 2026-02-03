@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import timedelta
+from typing import Any, Literal
 import logging
-from typing import Any
 
-import aiohttp
 from aiohttp import ClientError
 
 from homeassistant.config_entries import ConfigEntry
@@ -14,110 +12,120 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_PATH, CONF_SCAN_INTERVAL, DEFAULT_PATH, DEFAULT_PORT, DOMAIN
+from .const import (
+    CONF_DEVICE_TYPE,
+    CONF_PATH,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_DEVICE_TYPE,
+    DEFAULT_PATH,
+    DEFAULT_PORT,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-
-@dataclass(frozen=True)
-class WeatherDuinoConfig:
-    host: str
-    port: int
-    path: str
-    scan_interval: int
+DeviceType = Literal["auto", "4pro", "weatherdisplay", "aqm2", "aqm3", "unknown"]
 
 
 def _normalize_path(raw: str | None) -> str:
+    # IMPORTANT: empty => "/"
     if raw is None:
-        return DEFAULT_PATH
-    path = str(raw).strip()
-    if path == "":
         return "/"
-    if not path.startswith("/"):
-        path = "/" + path
-    return path
+    raw = str(raw).strip()
+    if raw == "":
+        return "/"
+    if not raw.startswith("/"):
+        raw = "/" + raw
+    return raw
 
 
 def _has_any(data: dict[str, Any], keys: list[str]) -> bool:
     return any(k in data for k in keys)
 
 
-def _looks_like_4pro_receiver(data: dict[str, Any]) -> bool:
-    # Typical 4Pro receiver keys
-    return _has_any(data, ["Tout", "Hout", "Wsp", "Wdir", "Rtd", "Rfr", "Tin", "Hin"])
-
-
-def _looks_like_weatherdisplay(data: dict[str, Any]) -> bool:
-    # WeatherDisplay example: {"ID":"...","TID":7,"T":143,"H":775}
-    return ("T" in data and "H" in data) and not _looks_like_4pro_receiver(data)
+def _detect_device_type(data: dict[str, Any]) -> DeviceType:
+    if _has_any(data, ["Wsp", "Wgs", "Wdir", "Rtd", "Rfr"]):
+        return "4pro"
+    if _has_any(data, ["PM25_last", "PM25_24H", "ts"]):
+        return "aqm3"
+    if _has_any(data, ["PM25AQI", "PM100AQI", "AVG_M"]):
+        return "aqm2"
+    if "T" in data and "H" in data:
+        return "weatherdisplay"
+    return "unknown"
 
 
 class WeatherDuinoCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Fetch WeatherDuino JSON from local webserver."""
-
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.hass = hass
         self.entry = entry
 
-        host = entry.data.get(CONF_HOST, "")
-        port = int(entry.data.get(CONF_PORT, DEFAULT_PORT))
+        self.host: str = entry.data.get(CONF_HOST)
+        self.port: int = entry.data.get(CONF_PORT, DEFAULT_PORT)
 
-        path = entry.options.get(CONF_PATH, entry.data.get(CONF_PATH, DEFAULT_PATH))
-        path = _normalize_path(path)
+        # FIX: options should override data, but if options are missing,
+        #      fall back to what was entered during setup (entry.data).
+        path_from_options = entry.options.get(CONF_PATH)
+        path_from_data = entry.data.get(CONF_PATH, DEFAULT_PATH)
+        self.path: str = _normalize_path(path_from_options if path_from_options is not None else path_from_data)
 
-        scan = int(entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 30)))
+        self.scan_interval: int = entry.options.get(
+            CONF_SCAN_INTERVAL,
+            entry.data.get(CONF_SCAN_INTERVAL, 30),
+        )
 
-        self.wd_config = WeatherDuinoConfig(host=host, port=port, path=path, scan_interval=scan)
+        self.forced_device_type: DeviceType = entry.options.get(
+            CONF_DEVICE_TYPE,
+            entry.data.get(CONF_DEVICE_TYPE, DEFAULT_DEVICE_TYPE),
+        )
 
-        if self.wd_config.port and self.wd_config.port != 80:
-            self.base_url = f"http://{self.wd_config.host}:{self.wd_config.port}"
-        else:
-            self.base_url = f"http://{self.wd_config.host}"
+        base = f"http://{self.host}"
+        if self.port and self.port != 80:
+            base = f"{base}:{self.port}"
+        self.url = f"{base}{self.path}"
 
-        self.url = f"{self.base_url}{self.wd_config.path}"
-
-        # Will be updated after first successful fetch
+        self.device_type: DeviceType = "unknown"
         self.device_id: str | None = None
-
-        # Used for device_info configuration_url handling
-        self.is_weatherdisplay: bool = False
 
         super().__init__(
             hass,
             _LOGGER,
-            name=f"{DOMAIN}-{self.wd_config.host}",
-            update_interval=timedelta(seconds=self.wd_config.scan_interval),
+            name=f"{DOMAIN}-{self.host}",
+            update_interval=timedelta(seconds=self.scan_interval),
         )
 
     @property
-    def configuration_url(self) -> str | None:
-        """
-        Return a clickable configuration URL for the HA device page.
+    def device_model(self) -> str:
+        return {
+            "4pro": "WeatherDuino 4Pro",
+            "weatherdisplay": "WeatherDuino WeatherDisplay",
+            "aqm2": "WeatherDuino 2Pro Air Quality",
+            "aqm3": "WeatherDuino Air Quality Monitor 3",
+        }.get(self.device_type, "WeatherDuino")
 
-        - 4Pro receiver: has a web UI under /weather
-        - WeatherDisplay: no web UI -> return None (no link in HA)
-        """
-        if self.is_weatherdisplay:
-            return None
-        return f"{self.base_url}/weather"
+    @property
+    def configuration_url(self) -> str | None:
+        if self.device_type == "4pro":
+            base = f"http://{self.host}"
+            if self.port and self.port != 80:
+                base = f"{base}:{self.port}"
+            return f"{base}/weather"
+        return None
 
     async def _async_update_data(self) -> dict[str, Any]:
         session = async_get_clientsession(self.hass)
 
         try:
-            async with session.get(self.url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+            async with session.get(self.url, timeout=10) as resp:
                 resp.raise_for_status()
-                data: dict[str, Any] = await resp.json(content_type=None)
+                data = await resp.json(content_type=None)
         except (ClientError, TimeoutError, ValueError) as err:
-            raise UpdateFailed(f"Error fetching/parsing WeatherDuino JSON from {self.url}: {err}") from err
+            raise UpdateFailed(f"Error fetching WeatherDuino JSON: {err}") from err
 
-        # Detect device type for config URL behavior
-        self.is_weatherdisplay = _looks_like_weatherdisplay(data)
+        detected = _detect_device_type(data)
+        self.device_type = (
+            detected if self.forced_device_type == "auto" else self.forced_device_type
+        )
 
-        # Prefer device-reported ID for naming
-        if isinstance(data.get("ID"), str) and data["ID"].strip():
-            self.device_id = data["ID"].strip()
-        else:
-            self.device_id = self.wd_config.host
-
+        self.device_id = data.get("ID", self.host)
         return data

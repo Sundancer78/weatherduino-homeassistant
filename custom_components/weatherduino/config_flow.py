@@ -4,76 +4,72 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
-from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    DOMAIN,
     CONF_PATH,
     CONF_SCAN_INTERVAL,
-    DEFAULT_PATH,
+    CONF_DEVICE_TYPE,
     DEFAULT_PORT,
+    DEFAULT_PATH,
     DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
+    DEFAULT_DEVICE_TYPE,
+    DEVICE_TYPES,
 )
 
 
 def _normalize_path(raw: str | None) -> str:
-    """
-    Normalize the JSON path:
-
-    - "" (empty/whitespace) -> "/"  (root; needed for WeatherDisplay)
-    - otherwise ensure leading "/"
+    """Normalize path input:
+    - empty => "/"
+    - ensure leading "/"
     """
     if raw is None:
-        raw = ""
-
+        return DEFAULT_PATH
     path = str(raw).strip()
-
     if path == "":
         return "/"
-
     if not path.startswith("/"):
         path = "/" + path
-
     return path
 
 
 class WeatherDuinoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            host: str = user_input[CONF_HOST].strip()
-            port: int = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+            host = str(user_input.get(CONF_HOST, "")).strip()
+            if not host:
+                errors["base"] = "invalid_input"
+            else:
+                port = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+                path = _normalize_path(user_input.get(CONF_PATH, DEFAULT_PATH))
+                device_type = user_input.get(CONF_DEVICE_TYPE, DEFAULT_DEVICE_TYPE)
+                scan_interval = int(user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
 
-            # IMPORTANT:
-            # If the user clears the optional field, HA may omit the key entirely.
-            # So we default to "" here, not DEFAULT_PATH.
-            raw_path = user_input.get(CONF_PATH, "")
-            path: str = _normalize_path(raw_path)
+                await self.async_set_unique_id(f"{host}:{port}")
+                self._abort_if_unique_id_configured()
 
-            scan_interval: int = int(user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
-
-            await self.async_set_unique_id(f"weatherduino-{host}:{port}{path}")
-            self._abort_if_unique_id_configured()
-
-            return self.async_create_entry(
-                title=host,
-                data={
-                    CONF_HOST: host,
-                    CONF_PORT: port,
-                    CONF_PATH: path,
-                    CONF_SCAN_INTERVAL: scan_interval,
-                },
-            )
+                return self.async_create_entry(
+                    title=host,
+                    data={
+                        CONF_HOST: host,
+                        CONF_PORT: port,
+                        CONF_PATH: path,
+                        CONF_DEVICE_TYPE: device_type,
+                        CONF_SCAN_INTERVAL: scan_interval,
+                    },
+                )
 
         schema = vol.Schema(
             {
                 vol.Required(CONF_HOST): str,
                 vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-                # Show default /json, but allow user to clear it (=> "/")
                 vol.Optional(CONF_PATH, default=DEFAULT_PATH): str,
+                vol.Optional(CONF_DEVICE_TYPE, default=DEFAULT_DEVICE_TYPE): vol.In(DEVICE_TYPES),
                 vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
             }
         )
@@ -81,41 +77,37 @@ class WeatherDuinoConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
     @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        return WeatherDuinoOptionsFlow(config_entry)
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
+        return WeatherDuinoOptionsFlowHandler(config_entry)
 
 
-class WeatherDuinoOptionsFlow(config_entries.OptionsFlow):
+class WeatherDuinoOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self._config_entry = config_entry
+        self._entry = config_entry
 
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(self, user_input: dict | None = None) -> FlowResult:
         if user_input is not None:
-            # Same trick for options: missing key should be treated as empty => "/"
-            raw_path = user_input.get(CONF_PATH, "")
-            path: str = _normalize_path(raw_path)
-
-            scan_interval: int = int(user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+            path = _normalize_path(user_input.get(CONF_PATH))
+            device_type = user_input.get(CONF_DEVICE_TYPE, DEFAULT_DEVICE_TYPE)
+            scan_interval = int(user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
 
             return self.async_create_entry(
                 title="",
                 data={
                     CONF_PATH: path,
+                    CONF_DEVICE_TYPE: device_type,
                     CONF_SCAN_INTERVAL: scan_interval,
                 },
             )
 
-        current_path = self._config_entry.options.get(
-            CONF_PATH, self._config_entry.data.get(CONF_PATH, DEFAULT_PATH)
-        )
-        current_scan = self._config_entry.options.get(
-            CONF_SCAN_INTERVAL, self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-        )
+        current_path = self._entry.options.get(CONF_PATH, self._entry.data.get(CONF_PATH, DEFAULT_PATH))
+        current_device_type = self._entry.options.get(CONF_DEVICE_TYPE, self._entry.data.get(CONF_DEVICE_TYPE, DEFAULT_DEVICE_TYPE))
+        current_scan = self._entry.options.get(CONF_SCAN_INTERVAL, self._entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
 
         schema = vol.Schema(
             {
                 vol.Optional(CONF_PATH, default=current_path): str,
+                vol.Optional(CONF_DEVICE_TYPE, default=current_device_type): vol.In(DEVICE_TYPES),
                 vol.Optional(CONF_SCAN_INTERVAL, default=current_scan): int,
             }
         )

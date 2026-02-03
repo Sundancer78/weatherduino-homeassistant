@@ -3,31 +3,29 @@
     "step": {
       "user": {
         "title": "WeatherDuino",
-        "description": "Gib die IP-Adresse oder den Hostnamen deines WeatherDuino-Geräts ein.\n\nJSON-Pfad:\n- Standard ist /json (WeatherDuino 4Pro)\n- Feld leer lassen, um / (Root) zu verwenden, z. B. für WeatherDisplay",
+        "description": "Gib die Verbindungsdaten deines WeatherDuino-Geräts ein.\n\n**JSON-Pfad**:\n- WeatherDuino 4Pro nutzt typischerweise `/json`\n- WeatherDisplay und manche Air-Quality-Geräte nutzen ggf. `/` (leer lassen = `/`)\n\n**Gerätetyp**:\n- `auto` wird empfohlen (Erkennung anhand der JSON-Keys)\n- Einen festen Typ nur setzen, wenn die automatische Erkennung nicht klappt.",
         "data": {
           "host": "IP-Adresse / Hostname",
           "port": "Port",
-          "path": "JSON-Pfad (leer lassen für /)",
-          "scan_interval": "Abfrageintervall (Sekunden)"
+          "path": "JSON-Pfad",
+          "device_type": "Gerätetyp",
+          "scan_interval": "Update-Intervall (Sekunden)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Verbindung zum WeatherDuino-JSON-Endpunkt fehlgeschlagen.",
-      "invalid_host": "Bitte eine gültige IP-Adresse oder einen Hostnamen eingeben."
-    },
-    "abort": {
-      "already_configured": "Dieses WeatherDuino-Gerät ist bereits konfiguriert."
+      "invalid_input": "Ungültige Eingabe. Bitte Werte prüfen."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "WeatherDuino Optionen",
-        "description": "Abfrageeinstellungen anpassen.\n\nJSON-Pfad:\n- Standard ist /json\n- Feld leer lassen, um / (Root) zu verwenden",
+        "description": "Polling und Endpoint-Einstellungen anpassen.\n\nTipp: Pfad leer lassen, um `/` zu verwenden.\n\nWenn die automatische Erkennung nicht klappt, setze den **Gerätetyp** manuell.",
         "data": {
-          "path": "JSON-Pfad (leer lassen für /)",
-          "scan_interval": "Abfrageintervall (Sekunden)"
+          "path": "JSON-Pfad",
+          "device_type": "Gerätetyp",
+          "scan_interval": "Update-Intervall (Sekunden)"
         }
       }
     }

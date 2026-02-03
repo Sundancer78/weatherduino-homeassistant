@@ -3,31 +3,29 @@
     "step": {
       "user": {
         "title": "WeatherDuino",
-        "description": "Enter the WeatherDuino IP/hostname.\n\nJSON path:\n- Default is /json (WeatherDuino 4Pro)\n- Leave empty to use / (root), e.g. for WeatherDisplay",
+        "description": "Enter the connection details of your WeatherDuino device.\n\n**JSON path**:\n- WeatherDuino 4Pro typically uses `/json`\n- WeatherDisplay and some Air Quality devices may use `/` (leave empty to use `/`)\n\n**Device type**:\n- `auto` is recommended (detect by JSON keys)\n- Use a fixed type only if detection fails.",
         "data": {
-          "host": "IP/Hostname",
+          "host": "IP address / hostname",
           "port": "Port",
-          "path": "JSON path (leave empty for /)",
-          "scan_interval": "Scan interval (seconds)"
+          "path": "JSON path",
+          "device_type": "Device type",
+          "scan_interval": "Update interval (seconds)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to the WeatherDuino JSON endpoint.",
-      "invalid_host": "Please enter a valid IP/hostname."
-    },
-    "abort": {
-      "already_configured": "This WeatherDuino device is already configured."
+      "invalid_input": "Invalid input. Please check the values."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "WeatherDuino Options",
-        "description": "Adjust polling settings.\n\nJSON path:\n- Default is /json\n- Leave empty to use / (root)",
+        "description": "Adjust polling and JSON endpoint settings.\n\nTip: Leave the path empty to use `/`.\n\nIf automatic detection fails, set **Device type** manually.",
         "data": {
-          "path": "JSON path (leave empty for /)",
-          "scan_interval": "Scan interval (seconds)"
+          "path": "JSON path",
+          "device_type": "Device type",
+          "scan_interval": "Update interval (seconds)"
         }
       }
     }

@@ -1,0 +1,52 @@
+{
+  "title": "WeatherDuino (JSON local)",
+
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurar WeatherDuino",
+        "description": "Configura un dispositivo WeatherDuino mediante una interfaz JSON local.",
+        "data": {
+          "host": "Dirección IP",
+          "port": "Puerto",
+          "path": "Ruta JSON",
+          "scan_interval": "Intervalo de actualización (segundos)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar al dispositivo",
+      "invalid_json": "Respuesta JSON inválida",
+      "unknown": "Error desconocido"
+    },
+    "abort": {
+      "already_configured": "Este dispositivo ya está configurado"
+    }
+  },
+
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de WeatherDuino",
+        "description": "Configura opciones avanzadas para el dispositivo WeatherDuino.",
+        "data": {
+          "path": "Ruta JSON",
+          "scan_interval": "Intervalo de actualización (segundos)",
+          "device_type": "Tipo de dispositivo"
+        }
+      }
+    }
+  },
+
+  "selector": {
+    "device_type": {
+      "options": {
+        "auto": "Detección automática",
+        "4pro": "WeatherDuino 4Pro",
+        "weatherdisplay": "WeatherDuino WeatherDisplay",
+        "aqm2": "WeatherDuino 2Pro (Calidad del aire)",
+        "aqm3": "WeatherDuino Air Quality Monitor 3"
+      }
+    }
+  }
+}
